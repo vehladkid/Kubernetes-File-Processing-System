@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: process-files
+  namespace: file-demo
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: processor
+              image: busybox
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "Processing files at $(date)"
+                  cd /data || exit 0
+                  if [ -z "$(ls -A .)" ]; then
+                    echo "No files to process"
+                    exit 0
+                  fi
+                  mkdir -p /tmp/out
+                  TIMESTAMP=$(date +%s)
+                  tar czf /tmp/out/processed-${TIMESTAMP}.tar.gz *
+                  echo "Created archive processed-${TIMESTAMP}.tar.gz"
+              volumeMounts:
+                - name: file-data
+                  mountPath: /data
+          volumes:
+            - name: file-data
+              persistentVolumeClaim:
+                claimName: pvc-file-data

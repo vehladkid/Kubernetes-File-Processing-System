@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-dashboard
+  template:
+    metadata:
+      labels:
+        app: file-dashboard
+    spec:
+      containers:
+      - name: file-dashboard
+        image: vehladkid/file-dashboard:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: file-dashboard-service
+spec:
+  selector:
+    app: file-dashboard
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: NodePort

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-dashboard
+  namespace: file-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-dashboard
+  template:
+    metadata:
+      labels:
+        app: file-dashboard
+    spec:
+      containers:
+        - name: dashboard
+          image: python:3.9-slim
+          command: ["python", "-m", "http.server", "8080", "--directory", "/data"]
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: file-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: file-dashboard-service
+  namespace: file-demo
+spec:
+  type: NodePort
+  selector:
+    app: file-dashboard
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 32000

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Stats Dashboard</title>
+    <style>
+        body { font-family: Arial; background-color: #f2f2f2; padding: 20px; }
+        .container { background: #fff; padding: 20px; border-radius: 10px; }
+        h1 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        .back { text-align: right; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="back"><a href="/">⬅ Back to Uploads</a></div>
+    <h1>📊 File Storage Dashboard</h1>
+    <p><b>Total Files:</b> {{ total_files }}</p>
+    <p><b>Total Storage Used:</b> {{ total_size }} KB</p>
+    <h3>Files by Type:</h3>
+    <table>
+        <tr><th>Category</th><th>Count</th></tr>
+        {% for type, count in type_stats %}
+            <tr><td>{{ type }}</td><td>{{ count }}</td></tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

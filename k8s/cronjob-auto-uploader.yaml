@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: auto-uploader
+  namespace: file-demo
+spec:
+  schedule: "*/1 * * * *"   # every minute - change as needed
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: uploader
+              image: alpine:3.18
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  URL="http://file-service.file-demo.svc.cluster.local:8080/upload"
+                  TIMESTAMP=$(date +%s)
+                  echo "auto file at ${TIMESTAMP}" > /tmp/auto-${TIMESTAMP}.txt
+                  curl -s -F "file=@/tmp/auto-${TIMESTAMP}.txt" ${URL} || echo "upload failed"
+          # no volumes required — uploader creates file inside container and posts it

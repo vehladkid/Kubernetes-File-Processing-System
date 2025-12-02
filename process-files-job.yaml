@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: process-files-manual
+  namespace: file-demo
+spec:
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: busybox
+        command: ["/bin/sh", "-c", "echo Processing files at $(date); cd /data; ls"]
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data
+      restartPolicy: Never
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: file-pvc

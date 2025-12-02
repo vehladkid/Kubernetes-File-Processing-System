@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-files
+  namespace: file-demo
+spec:
+  schedule: "*/5 * * * *"   # demo: every 5 minutes. Change as needed
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: alpine:3.18
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  echo "Backup job starting at $(date -u)"
+                  # ensure mount points exist
+                  mkdir -p /data /backup
+                  cd /data || { echo "/data mount missing"; exit 0; }
+                  if [ -z "$(ls -A .)" ]; then
+                    echo "No files in /data to backup"; exit 0
+                  fi
+                  TIMESTAMP=$(date -u +%Y%m%dT%H%M%SZ)
+                  ARCHIVE="backup-${TIMESTAMP}.tar.gz"
+                  # create single archive of everything in /data
+                  tar -czf /backup/${ARCHIVE} .
+                  echo "Created /backup/${ARCHIVE}"
+                  # create 6 copies with unique names (rotation style)
+                  for i in 1 2 3 4 5 6; do
+                    cp /backup/${ARCHIVE} /backup/${ARCHIVE%.tar.gz}-copy${i}.tar.gz || true
+                  done
+                  echo "Created 6 backup copies"
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: backup
+                  mountPath: /backup
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: pvc-file-data
+            - name: backup
+              persistentVolumeClaim:
+                claimName: pvc-file-backups
