@@ -1,210 +1,212 @@
-KUBERNETES FILE PROCESSING PIPELINE (OS Class Project)
-A complete container-based scheduling and file-processing system built using Kubernetes Jobs, PVC, Pods, Flask, and SQLite.
+# 🚀 Kubernetes File Processing Pipeline (OS Class Project)
 
+A complete container-based scheduling and file-processing system built using **Kubernetes Jobs**, **PVC**, **Pods**, **Flask**, and **SQLite**.
 
+---
 
-PROJECT OVERVIEW
+## 📌 Project Overview
 
 This project implements a file-processing pipeline using:
-Kubernetes Jobs
-Persistent Volume Claims (PVC)
-Container-based Scheduling (OS Concept)
-Flask Web Interface
-Kubernetes Dashboard
-SQLite-backed file indexing
 
-Users can upload, view, and delete files through a Flask UI.
-Files are stored in a Kubernetes PVC and processed by Jobs running inside Pods.
-A dashboard displays resource counts (images, documents, etc.), all synced with SQLite.
+- Kubernetes Jobs  
+- Persistent Volume Claims (PVC)  
+- Container-based Scheduling (OS Concept)  
+- Flask Web Interface  
+- Kubernetes Dashboard  
+- SQLite-backed file indexing  
+
+Users can **upload**, **view**, and **delete** files using a Flask UI.  
+Files are stored in a PVC and processed by Kubernetes Jobs running inside pods.  
+A dashboard displays statistics such as number of images, documents, etc.
+
+---
+
+## 🎯 Objectives
+
+- Implement OS-style **job scheduling** using Kubernetes Jobs & Containers  
+- Build a persistent file management system using **PVC**  
+- Deploy a microservice architecture with **Flask + K8s**  
+- Track file metadata automatically using **SQLite DB inside containers**  
+- Provide a clean UI for file upload / view / delete  
+- Expose a dashboard for resource statistics  
+
+---
+
+## 🧩 Architecture
 
 
 
-OBJECTIVES
-
-Implement OS-style job scheduling using Kubernetes Jobs & Containers
-Build a persistent file management system using PVC
-Deploy a microservice architecture with Flask + K8s Jobs
-Track file metadata automatically using SQLite DB inside containers
-Provide a clean web UI for file upload/view/delete
-Expose a dashboard for resource statistics
-
-
-
-ARCHITECTURE
-                    ┌─────────────────────────────────┐
-                    │            Flask UI              │
-                    │  - File Upload / View / Delete   │
-                    │  - Triggers Job Creation         │
-                    └─────────────────────────────────┘
-                                   │
-                                   ▼
                      ┌─────────────────────────────┐
-                     │  Kubernetes Deployment       │
-                     │  (flask-site)                │
-                     └─────────────────────────────┘
-                                   │
-                                   ▼
+                     │          Flask UI            │
+                     │   Upload / View / Delete     │
+                     └───────────────┬─────────────┘
+                                     │
+                                     ▼
+                     ┌─────────────────────────────┐
+                     │   Kubernetes Deployment      │
+                     │        (flask-site)          │
+                     └───────────────┬─────────────┘
+                                     │
+                                     ▼
                      ┌─────────────────────────────┐
                      │     Persistent Volume        │
                      │     (PVC: file storage)      │
-                     └─────────────────────────────┘
-                                   │
-                                   ▼
+                     └───────────────┬─────────────┘
+                                     │
+                                     ▼
                      ┌─────────────────────────────┐
-                     │ Kubernetes Job (processor)   │
-                     │ - Classifies files (img/docs)│
-                     │ - Updates SQLite DB          │
-                     └─────────────────────────────┘
-                                   │
-                                   ▼
+                     │   Kubernetes Job (processor) │
+                     │ Classifies files (img/docs)  │
+                     │ Updates SQLite DB            │
+                     └───────────────┬─────────────┘
+                                     │
+                                     ▼
                      ┌─────────────────────────────┐
-                     │    Dashboard Deployment      │
-                     │ - Shows counts/statistics    │
+                     │     Dashboard Deployment     │
+                     │   Shows counts/statistics    │
                      └─────────────────────────────┘
 
 
 
 
-REPOSITORY STRUCTURE
-k8s-os-project/
+
+## 📁 Repository Structure
+
+
+Kubernetes-File-Processing-System/
+
 │
-├── k8s-file-container/
-│   ├── app/                   # Backend processing logic
-│   ├── k8s/                   # YAML specs
-│   └── process-files-job.yaml
+
+├── k8s-file-container/ # Backend file processor
+
+│ ├── app/
+
+│ ├── k8s/
+
+│ └── process-files-job.yaml
+
 │
-├── k8s-dashboard/             # Dashboard UI + APIs
-│   ├── app.py
-│   ├── deployment.yaml
-│   ├── dashboard-deploy.yaml
-│   ├── Dockerfile
-│   └── pvc.yaml
+
+├── k8s-dashboard/ # Dashboard to show file stats
+
+│ ├── app.py
+
+│ ├── deployment.yaml
+
+│ ├── dashboard-deploy.yaml
+
+│ ├── Dockerfile
+
+│ └── pvc.yaml
+
 │
-├── flask-site/                # Web UI (upload/view/delete)
-│   ├── app.py
-│   ├── templates/
-│   ├── static/
-│   └── flask-site-deployment.yaml
+
+├── flask-site/ # Flask frontend
+
+│ ├── app.py
+
+│ ├── templates/
+
+│ ├── static/
+
+│ └── flask-site-deployment.yaml
+
 │
-├── file-pvc.yaml              # Shared Persistent Volume
-├── process-files-job.yaml     # Top-level job spec
-├── setup_k8s_project.sh       # Script to auto-deploy system
+
+├── file-pvc.yaml # Persistent Volume Claim
+
+├── process-files-job.yaml # Top-level processor job
+
+├── setup_k8s_project.sh # Auto-deployment script
+
 └── README.md
 
 
 
 
+---
 
-🖥️ FLASK  WEB  UI (Screenshots)
+## 🖥️ Flask Web UI
 
-Your UI supports:
-Uploading files
-Viewing images/documents
-Deleting files (removes from PVC and SQLite)
-Navigation to dashboard
+The UI allows:
 
+- Uploading files  
+- Viewing images/documents  
+- Deleting files  
+- Navigating to dashboard  
+- All operations sync with SQLite automatically  
 
+Screenshots can be added later.
 
+---
 
-HOW IT WORKS
+## ⚙️ How to Run the Project
 
-1️⃣ Upload a file through the Flask UI
-➡ Gets stored inside the PVC
-➡ Entry added to SQLite DB
-
-2️⃣ Kubernetes Job is triggered
-Job container runs your OS scheduling logic
-Classifies files → images/docs/text
-Updates DB → status, type, etc.
-
-3️⃣ Dashboard displays:
-Total images
-Total documents
-Total files in PVC
-Live synced from SQLite
-
-4️⃣ Delete a file
-Removed from PVC
-Removed from SQLite
-UI refreshes automatically
-
-
-
-
-HOW TO RUN THE PROJECT
-
-Run all commands inside your VM.
-
-⭐ Start Kubernetes cluster
+### 1️⃣ Start Minikube
+```bash
 minikube start
-
-⭐ Deploy namespace
+```
+### 2️⃣ Create namespace
+```bash
 kubectl create namespace file-demo
-
-⭐ Deploy PVC + Jobs + Backend processing
+```
+### 3️⃣ Apply PVC + Jobs
+```bash
 kubectl apply -f file-pvc.yaml -n file-demo
 kubectl apply -f process-files-job.yaml -n file-demo
-
-⭐ Deploy Flask UI
+```
+### 4️⃣ Deploy Flask UI
+```bash
 cd flask-site
 kubectl apply -f flask-site-deployment.yaml -n file-demo
 kubectl expose deployment flask-site --type=NodePort --port=5000 -n file-demo
 flask run
-
-⭐ Open the UI
-
-Get the NodePort:
+```
+### 5️⃣ Access Flask UI
+```bash
 minikube service flask-site -n file-demo --url
+```
 
-Open the link in a browser.
-Dashboard
+## 🌐 Dashboard
 
-Visit the dashboard via:
+Shows:
 
-http://<node-ip>:<dashboard-port>
+Total Images
 
-Displays:
-Total images
-Total documents
-Total text files
-Total processed files
-All in real-time from SQLite
+Total Documents
 
+Total Files
+
+Live counters from SQLite
 
 
+## 🛠️ Tech Stack
 
-🛠️ TECHNOLOGIES USED
-Component       	Tech
-Web UI	                Flask, HTML, CSS
-Processing Backend	Python
+Component	Technology
+
+Web UI	Flask
+
 Container Runtime	Kubernetes, Minikube
-Storage          	PVC, PV
-Scheduling Logic	Kubernetes Jobs
-Database        	SQLite
-Frontend Deployment	K8s Deployment + Service
-Dashboard	        Flask API + K8s Deployment
 
+Storage	PVC / PV
 
+Scheduling	Kubernetes Jobs
 
+Database	SQLite
 
-🌟 FEATURES
-✔ File Upload / View / Delete
-✔ Automatic file classification
-✔ Persistent storage using PVC
-✔ SQLite-based indexing
-✔ Dashboard showing resource statistics
-✔ Container-based OS scheduling
-✔ Complete microservice architecture
+Frontend	HTML, CSS
 
+Deployment	K8s Deployments & Services
 
+## 🚧 Future Improvements
 
+Add worker autoscaling (HPA)
 
-FUTURE IMPROVEMENTS
-Add worker autoscaling using HPA
-Convert Flask UI into a React frontend
-Add Redis for queue management
+Add Redis for message queue
+
+Build React frontend
+
+Add logs viewer
+
 Add user authentication
-Store file type/model metadata
-Add logs viewer in dashboard
-
 
