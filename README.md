@@ -1,3 +1,13 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/Kubernetes-326ce5?style=for-the-badge&logo=kubernetes&logoColor=white">
+  <img src="https://img.shields.io/badge/Minikube-f5dd42?style=for-the-badge&logo=kubernetes&logoColor=black">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white">
+  <img src="https://img.shields.io/badge/SQLite-07405e?style=for-the-badge&logo=sqlite&logoColor=white">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge">
+</p>
+
+
 # 🚀 Kubernetes File Processing Pipeline (OS Class Project)
 
 A complete container-based scheduling and file-processing system built using **Kubernetes Jobs**, **PVC**, **Pods**, **Flask**, and **SQLite**.
